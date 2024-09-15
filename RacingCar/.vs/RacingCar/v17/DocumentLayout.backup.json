@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\likee\\OneDrive\\\u00C1rea de Trabalho\\Programming\\C\\RacingCar\\RacingCar\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5A4C0B8B-C3B5-4862-A67D-AE415B76E97C}|RacingCar.vcxproj|C:\\Users\\likee\\OneDrive\\\u00C1rea de Trabalho\\Programming\\C\\RacingCar\\RacingCar\\RacingCar.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{5A4C0B8B-C3B5-4862-A67D-AE415B76E97C}|RacingCar.vcxproj|solutionrelative:RacingCar.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RacingCar.cpp",
+              "DocumentMoniker": "C:\\Users\\likee\\OneDrive\\\u00C1rea de Trabalho\\Programming\\C\\RacingCar\\RacingCar\\RacingCar.cpp",
+              "RelativeDocumentMoniker": "RacingCar.cpp",
+              "ToolTip": "C:\\Users\\likee\\OneDrive\\\u00C1rea de Trabalho\\Programming\\C\\RacingCar\\RacingCar\\RacingCar.cpp",
+              "RelativeToolTip": "RacingCar.cpp",
+              "ViewState": "AgIAADAAAAAAAAAAAAAAADoAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-09-15T09:27:07.989Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
