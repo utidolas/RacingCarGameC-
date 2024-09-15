@@ -11,9 +11,27 @@ public:
 private:
     float fCarPos = .0f;
     float fDistance = .0f;
+    float fSpeed = 0.0f;
+
+    float fCurvature = .0f;
+
+    vector<pair<float, float>> vecTrack; //curvature, distance
 
 protected:
     virtual bool OnUserCreate() {
+        // Track sections
+        vecTrack.push_back(make_pair(0.0f, 10.0f)); //Start line
+        vecTrack.push_back(make_pair(0.0f, 200.0f));
+        vecTrack.push_back(make_pair(1.0f, 200.0f));
+        vecTrack.push_back(make_pair(0.0f, 400.0f));
+        vecTrack.push_back(make_pair(-1.0f, 100.0f));
+        vecTrack.push_back(make_pair(0.0f, 200.0f));
+        vecTrack.push_back(make_pair(-1.0f, 200.0f));
+        vecTrack.push_back(make_pair(1.0f, 200.0f));
+        vecTrack.push_back(make_pair(0.0f, 200.0f));
+        vecTrack.push_back(make_pair(0.2f, 500.0f));
+        vecTrack.push_back(make_pair(0.0f, 200.0f));
+
         return true;
     }
 
@@ -21,7 +39,30 @@ protected:
 
         // debbuging
         if (m_keys[VK_UP].bHeld)
-            fDistance += 100.0f * fElapsedTime;
+            fSpeed += 2.0f * fElapsedTime;
+        else
+            fSpeed -= 1.0f * fElapsedTime;
+
+        // Clamp speed
+        if (fSpeed < 0.0f) fSpeed = 0.0f;
+        if (fSpeed > 1.0f) fSpeed = 1.0f;
+
+        // Moving car
+        fDistance += (70.0f * fSpeed) * fElapsedTime;
+
+        // Get point on track
+        float fOffset = 0;
+        int nTrackSection = 0;
+
+        // Find pos on track
+        while (nTrackSection < vecTrack.size() && fOffset <= fDistance) {
+            fOffset += vecTrack[nTrackSection].second;
+            nTrackSection++;
+        }
+
+        float fTargetCurvature = vecTrack[nTrackSection - 1].first;
+        float fTrackCurveDiff = (fTargetCurvature - fCurvature) * fElapsedTime *fSpeed;
+        fCurvature += fTrackCurveDiff;
 
         // Drawing empty spaces in the background
         Fill(0, 0, ScreenWidth(), ScreenHeight(), L' ', 0);
@@ -32,8 +73,8 @@ protected:
 
                 // perspective obvs
                 float fPerspective = (float)y / (ScreenHeight() / 2.0f);
-                    
-                float fMiddlePoint = .5f; // screen mid
+
+                float fMiddlePoint = .5f + fCurvature * powf((1.0f - fPerspective), 3); // screen mid w/ curve and persp
                 float fRoadWidth = .1f + fPerspective *.8f; // adjusting to fit screen
                 float fClipWidth = fRoadWidth * .15f;
 
