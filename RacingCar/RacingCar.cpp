@@ -1,6 +1,8 @@
 #include <iostream>
-using namespace std;
+#include <string>
 #include "olcConsoleGameEngine.h"
+using namespace std;
+
 
 class OneLoneCoder_FormulaOLC : public olcConsoleGameEngine {
 public:
@@ -11,10 +13,16 @@ public:
 private:
     float fCarPos = .0f;
     float fDistance = .0f;
-    float fSpeed = 0.0f;
+    float fSpeed = .0f;
 
     float fCurvature = .0f;
+    float fTrackCurvature = .0f;
+    float fPlayerCurvature = .0f;
+    float fTrackDistance = .0f;
 
+    float fCurrentLapTime = .0f;
+
+    list<int> listLapTimes = { 0,0,0,0,0 };
     vector<pair<float, float>> vecTrack; //curvature, distance
 
 protected:
@@ -32,6 +40,10 @@ protected:
         vecTrack.push_back(make_pair(0.2f, 500.0f));
         vecTrack.push_back(make_pair(0.0f, 200.0f));
 
+        // iteare through tracks
+        for (auto t : vecTrack)
+            fTrackDistance += t.second;
+
         return true;
     }
 
@@ -42,6 +54,15 @@ protected:
             fSpeed += 2.0f * fElapsedTime;
         else
             fSpeed -= 1.0f * fElapsedTime;
+
+        if (m_keys[VK_LEFT].bHeld)
+            fPlayerCurvature -= .7f * fElapsedTime;
+
+        if (m_keys[VK_RIGHT].bHeld)
+            fPlayerCurvature += .7f * fElapsedTime;
+
+        if (fabs(fPlayerCurvature - fTrackCurvature) >= .8f)
+            fSpeed = 5.0f * fElapsedTime;
 
         // Clamp speed
         if (fSpeed < 0.0f) fSpeed = 0.0f;
@@ -54,6 +75,14 @@ protected:
         float fOffset = 0;
         int nTrackSection = 0;
 
+        fCurrentLapTime += fElapsedTime;
+        if (fDistance >= fTrackDistance) {
+            fDistance -= fTrackDistance;
+            listLapTimes.push_front(fCurrentLapTime);
+            listLapTimes.pop_back();
+            fCurrentLapTime = .0f;
+        }
+
         // Find pos on track
         while (nTrackSection < vecTrack.size() && fOffset <= fDistance) {
             fOffset += vecTrack[nTrackSection].second;
@@ -63,6 +92,8 @@ protected:
         float fTargetCurvature = vecTrack[nTrackSection - 1].first;
         float fTrackCurveDiff = (fTargetCurvature - fCurvature) * fElapsedTime *fSpeed;
         fCurvature += fTrackCurveDiff;
+
+        fTrackCurvature += (fCurvature)*fElapsedTime * fSpeed;
 
         // Drawing empty spaces in the background
         Fill(0, 0, ScreenWidth(), ScreenHeight(), L' ', 0);
@@ -108,6 +139,7 @@ protected:
         // ***************** DRAWING CAR *****************
         // 
          //drawing car in the mid and subtract offset
+        fCarPos = fPlayerCurvature - fTrackCurvature;
         int nCarPos = ScreenWidth() / 2 + ((int)(ScreenWidth() * fCarPos) / 2.0f) - 7; 
 
         DrawStringAlpha(nCarPos, 79, L"   || ## ||   ");
@@ -118,6 +150,24 @@ protected:
         DrawStringAlpha(nCarPos, 84, L"|||  ####  |||");
         DrawStringAlpha(nCarPos, 85, L"|||########|||");
         DrawStringAlpha(nCarPos, 86, L"|||  ####  |||");
+
+        // Draw lap 
+        auto disp_time = [](float t) {
+            int nMinutes = t / 60.0f;
+            int nSeconds = t - (nMinutes * 60.0f);
+            int nMilliSeconds = (t - (float)nSeconds) * 1000.0f;
+            return to_wstring(nMinutes) + L"." + to_wstring(nSeconds) + L":" + to_wstring(nMilliSeconds);
+            };
+
+        DrawString(10, 8, disp_time(fCurrentLapTime));
+        // Display 5 lap times
+        int j = 10;
+        for (auto time : listLapTimes) {
+            DrawString(10, j, disp_time(1));
+            j++;
+
+        }
+
         return true;
     }
 };
